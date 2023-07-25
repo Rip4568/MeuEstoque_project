@@ -62,12 +62,13 @@ async function sendRequestCreateProduct(nome, preco) {
     if(response.ok) {
       if(response.status == 200) {
         const data = await response.json();
-        //listnerAllbuttonsDelete();
-        console.log(data);
+        sendRequestGetProducts();
       }
+    } else {
+      console.log('erro na requisicao 2: ' + response.message);
     }
   } catch(error) {
-    throw new Error(`Erro na solicitação: ${error.message}`);
+    throw new Error(`Erro na solicitação: ${error}`);
   }
 }
 
