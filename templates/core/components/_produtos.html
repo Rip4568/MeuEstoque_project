@@ -1,0 +1,20 @@
+<div id="produtos">
+  {% for produto in produtos %}
+  <div class="card p-2 w-100" id="product-{{ produto.id }}">
+    <input type="hidden" name="produto_id" value="{{produto.id}}" />
+    <p class="nome">{{produto.nome}}</p>
+    <p class="preco">R$:{{produto.preco}}</p>
+    <div class="acoes">
+      <button class="btn btn-warning btn-sm">Editar</button>
+      <button
+        class="btn btn-danger btn-sm deletar-produto-btn"
+        type="submit"
+        name="deletar-produto"
+        value="{{produto.id}}"
+      >
+        Deletar
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>

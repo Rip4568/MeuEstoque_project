@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title_complement %}{% if title %} {{title}} {% endif %}{% endblock title_complement %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'core/css/home.css' %}">
+{% endblock css %}
+
+{% block main %}
+  <div class="home pt-1">
+    <div class="criar-novo-produto">
+      <form
+        name="criar-novo-produto" 
+        id="form-new-product"
+        method="post"
+        >
+        {% csrf_token %}
+        <p>nome: <input 
+          type="text" 
+          name="nome"
+          id="nome" 
+          required></p>
+        <p>preco: <input 
+          type="number" 
+          step="0.01" 
+          name="preco" 
+          id="preco"
+          required></p>
+        <button 
+          type="submit"
+          class="btn btn-primary"
+          name="criar-novo-produto"
+          id="create-new-product-btn-submit"
+          >Cadastrar</button>
+      </form>
+    </div>
+    <div class="listar-todos-os-produtos">
+      <form method="post" name="filtrar-produtos">
+        {% csrf_token %}
+        <span>data inicio: <input 
+            type="date"
+            name="data-inicio"
+            required
+            >
+        </span>
+        <span>data fim: <input 
+          type="date"
+          name="data-fim"
+          required>
+        </span>
+        <button 
+          type="submit"
+          class="btn btn-primary m-2"
+          >Listar</button>
+      </form>
+      {% include "core/components/_produtos.html" %}
+    </div>
+  </div>
+{% endblock main %}
+
+{% block script %}
+<script src="{% static 'core/js/home.js' %}"></script>
+{% endblock script %}

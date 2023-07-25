@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title_complement %}{% if title %} {{title}} {% endif %}{% endblock title_complement %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+{% endblock css %}
+
+{% block main %}
+  <form action=""></form>
+{% endblock main %}
+
+{% block script %}
+<script src="{% static 'core/js/login.js' %}"></script>
+{% endblock script %}
