@@ -52,10 +52,11 @@ class HomeView(View):
                 })
             except Exception as error:
                 #TODO: Tratar erros de validação, ao tentar criar 2 objetos não esta retornando o erro
-                return JsonResponse({
+                print(error)
+                return JsonResponse(data={
                     'status': 400,
                     'message': f'{error}',
-                })
+                }, status=400)
         elif 'criar-novo-produto' in self.request.POST:
             nome_produto = self.request.POST['nome']
             preco_produto = self.request.POST['preco']

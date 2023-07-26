@@ -59,14 +59,16 @@ async function sendRequestCreateProduct(nome, preco) {
         preco: preco,
       }),
     });
+    const data = await response.json();
     if(response.ok) {
       if(response.status == 200) {
-        const data = await response.json();
         sendRequestGetProducts();
+      } else {
+        console.log('erro no preenchimento de campos: ' + response.message);
       }
     } else {
-      console.log('erro na requisicao 2: ' + response.message);
-    }
+      console.log('erro na requisicao: ' + response.status + data.message);
+    } 
   } catch(error) {
     throw new Error(`Erro na solicitação: ${error}`);
   }
