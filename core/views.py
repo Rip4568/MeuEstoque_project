@@ -9,7 +9,7 @@ from django.core import serializers
 from . import models
 from .forms import ProdutoForm
 import json
-
+import traceback
 
 
 
@@ -42,21 +42,24 @@ class HomeView(View):
             nome_produto = body['nome']
             preco_produto = body['preco']
             try:
-                novo_produto = models.Produto(nome=nome_produto, preco=preco_produto)
+                novo_produto = models.Produto(
+                    nome=nome_produto, 
+                    preco=preco_produto
+                )
                 novo_produto.full_clean()
-                novo_produto.save()                    
+                novo_produto.save()
                 return JsonResponse({
                     'status': 200,
                     'message': 'success',
-                    'new_product': serializers.serialize('json', [novo_produto, ]),
+                    'new_product': serializers.serialize(
+                        'json', [novo_produto, ]
+                    ),
                 })
             except Exception as error:
-                #TODO: Tratar erros de validação, ao tentar criar 2 objetos não esta retornando o erro
-                print(error)
                 return JsonResponse(data={
                     'status': 400,
-                    'message': f'{error}',
-                }, status=400)
+                    'message': str(error),
+                }, status=400, safe=False)
         elif 'criar-novo-produto' in self.request.POST:
             nome_produto = self.request.POST['nome']
             preco_produto = self.request.POST['preco']

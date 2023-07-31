@@ -62,13 +62,17 @@ async function sendRequestCreateProduct(nome, preco) {
     const data = await response.json();
     if(response.ok) {
       if(response.status == 200) {
+        const form = window.document.querySelector("#form-new-product");
+        form.querySelector('input#nome').before('');
         sendRequestGetProducts();
-      } else {
-        console.log('erro no preenchimento de campos: ' + response.message);
       }
     } else {
-      console.log('erro na requisicao: ' + response.status + data.message);
-    } 
+      console.log(`Erro na requisição, stats: ${response.status} \n ${data.message}`);
+      const messageErrorJSON = JSON.parse(data.message.replace(/'/g, '"'));
+      const form = window.document.querySelector("#form-new-product");
+      form.querySelector('input#nome').before(messageErrorJSON?.nome);
+      return [data, messageErrorJSON]
+    }
   } catch(error) {
     throw new Error(`Erro na solicitação: ${error}`);
   }
