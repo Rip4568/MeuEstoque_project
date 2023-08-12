@@ -8,7 +8,7 @@ async function sendRequest(method, url, params) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(params),
-    });    
+    });
     return response;
   } catch (error) {
     throw new Error(`Erro na solicitação: ${error.message}`);
@@ -35,27 +35,26 @@ function listnerFormNewProduct() {
   });
 }
 
-
 async function sendRequestGetProducts() {
   const currentURL = new URL(window.location.href);
-  currentURL.searchParams.append('produtos-ajax', '')
+  currentURL.searchParams.append("produtos-ajax", "");
   try {
     const response = await fetch(currentURL.href, {
       method: "GET", //'PUT', 'DELETE', 'POST', 'GET'
       headers: {
-        'X-CSRFTOKEN': getCookie('csrftoken'),
-        'Content-Type': 'application/json'
+        "X-CSRFTOKEN": getCookie("csrftoken"),
+        "Content-Type": "application/json",
       },
     });
-    if(response.ok) {
-      if(response.status == 200) {
+    if (response.ok) {
+      if (response.status == 200) {
         const data = await response.json();
         const produtos = window.document.querySelector("#produtos");
         produtos.innerHTML = data.html_produtos;
         listnerAllbuttonsDelete();
       }
     }
-  } catch(error) {
+  } catch (error) {
     throw new Error(`Erro na solicitação: ${error.message}`);
   }
 }
@@ -68,43 +67,47 @@ async function sendRequestCreateProduct(nome, preco) {
     const response = await fetch(currentURL.href, {
       method: "POST", //'PUT', 'DELETE', 'POST', 'GET'
       headers: {
-        'X-CSRFTOKEN': getCookie('csrftoken'),
-        'Content-Type': 'application/json'
+        "X-CSRFTOKEN": getCookie("csrftoken"),
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        'criar-novo-produto-ajax': true,
+        "criar-novo-produto-ajax": true,
         nome: nome,
         preco: preco,
       }),
     });
     const data = await response.json();
-    if(response.ok) {
-      if(response.status == 200) {
+    if (response.ok) {
+      if (response.status == 200) {
         const form = window.document.querySelector("#form-new-product");
-        form.querySelector('input#nome').before('');
+        form.querySelector("input#nome").before("");
         sendRequestGetProducts();
       }
     } else {
-      console.log(`Erro na requisição, stats: ${response.status} \n ${data.message}`);
+      console.log(
+        `Erro na requisição, stats: ${response.status} \n ${data.message}`
+      );
       const messageErrorJSON = JSON.parse(data.message.replace(/'/g, '"'));
       const form = window.document.querySelector("#form-new-product");
-      /* <p class="message-error-name-product"></p> */
-      const paragraphMessageError = form.querySelector('p.message-error-name-product');
-      if(Object.values(messageErrorJSON).length > 0) {
-        let messageText = '';
+      /* <p class="message-error-product"></p> */
+      const paragraphMessageError = form.querySelector(
+        "p.message-error-product"
+      );
+      if (Object.values(messageErrorJSON).length > 0) {
+        let messageText = "";
         for (const message in messageErrorJSON) {
           if (Object.hasOwnProperty.call(messageErrorJSON, message)) {
             const element = messageErrorJSON[message];
-            messageText += `${element} <br>`;  
+            messageText += `${element} <br>`;
           }
         }
         paragraphMessageError.innerHTML = messageText;
       } else {
         paragraphMessageError.innerHTML = "Produto criado com sucesso <br>";
       }
-      return [data, messageErrorJSON]
+      return [data, messageErrorJSON];
     }
-  } catch(error) {
+  } catch (error) {
     throw new Error(`Erro na solicitação: ${error}`);
   }
 }
@@ -152,7 +155,7 @@ function getCookie(name) {
     return cookieValue.split("=")[1];
   }
 
-  return 'NA';
+  return "NA";
 }
 
 listnerAllbuttonsDelete();
