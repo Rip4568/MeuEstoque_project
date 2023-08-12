@@ -1,6 +1,6 @@
 <div id="produtos">
   {% for produto in produtos %}
-  <div class="card p-2 w-100" id="product-{{ produto.id }}">
+  <div class="card p-2 w-100 mt-2" id="product-{{ produto.id }}">
     <input type="hidden" name="produto_id" value="{{produto.id}}" />
     <p class="nome">{{produto.nome}}</p>
     <p class="preco">R$:{{produto.preco}}</p>

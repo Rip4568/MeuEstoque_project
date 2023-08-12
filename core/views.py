@@ -70,11 +70,6 @@ class HomeView(View):
             except Exception as error:
                 return HttpResponse(error)
             return HttpResponseRedirect(reverse('core:home'))
-            return JsonResponse({
-                'success': True,
-                'status': 200
-            })
-        print(self.request.POST)
         return JsonResponse({
             'status': 200,
             'message': 'NOT FOUND OPTION',

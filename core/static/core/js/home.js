@@ -1,3 +1,20 @@
+async function sendRequest(method, url, params) {
+  /* Função adapatada para fazer request ao servidor django */
+  try {
+    const response = await fetch(url, {
+      method: method, //'PUT', 'DELETE', 'POST', 'GET'
+      headers: {
+        "X-CSRFTOKEN": getCookie("csrftoken"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });    
+    return response;
+  } catch (error) {
+    throw new Error(`Erro na solicitação: ${error.message}`);
+  }
+}
+
 function listnerAllbuttonsDelete() {
   const allButtons = window.document.querySelectorAll(".deletar-produto-btn");
   allButtons.forEach((button) => {
@@ -17,6 +34,7 @@ function listnerFormNewProduct() {
     sendRequestCreateProduct(nome, preco);
   });
 }
+
 
 async function sendRequestGetProducts() {
   const currentURL = new URL(window.location.href);
@@ -70,7 +88,20 @@ async function sendRequestCreateProduct(nome, preco) {
       console.log(`Erro na requisição, stats: ${response.status} \n ${data.message}`);
       const messageErrorJSON = JSON.parse(data.message.replace(/'/g, '"'));
       const form = window.document.querySelector("#form-new-product");
-      form.querySelector('input#nome').before(messageErrorJSON?.nome);
+      /* <p class="message-error-name-product"></p> */
+      const paragraphMessageError = form.querySelector('p.message-error-name-product');
+      if(Object.values(messageErrorJSON).length > 0) {
+        let messageText = '';
+        for (const message in messageErrorJSON) {
+          if (Object.hasOwnProperty.call(messageErrorJSON, message)) {
+            const element = messageErrorJSON[message];
+            messageText += `${element} <br>`;  
+          }
+        }
+        paragraphMessageError.innerHTML = messageText;
+      } else {
+        paragraphMessageError.innerHTML = "Produto criado com sucesso <br>";
+      }
       return [data, messageErrorJSON]
     }
   } catch(error) {
