@@ -1,4 +1,4 @@
-async function sendRequest(method, url, params) {
+async function sendRequest(method, url, params, optionalHeaders = {}) {
   /* Função adapatada para fazer request ao servidor django */
   try {
     const response = await fetch(url, {
@@ -6,6 +6,7 @@ async function sendRequest(method, url, params) {
       headers: {
         "X-CSRFTOKEN": getCookie("csrftoken"),
         "Content-Type": "application/json",
+        ...optionalHeaders,
       },
       body: JSON.stringify(params),
     });
@@ -62,7 +63,6 @@ async function sendRequestGetProducts() {
 async function sendRequestCreateProduct(nome, preco) {
   //const precoFormatado = preco.replace(",", ".");
   const currentURL = new URL(window.location.href);
-
   try {
     const response = await fetch(currentURL.href, {
       method: "POST", //'PUT', 'DELETE', 'POST', 'GET'
@@ -140,6 +140,23 @@ async function sendRequestDeleteProduct(button) {
     } else {
       console.log("erro na requisicao: " + response.status);
     }
+  } catch (error) {
+    throw new Error(`Erro na solicitação: ${error.message}`);
+  }
+}
+
+async function sendRequestFilterProduct() {
+  const date = window.document.querySelector("input.data").value;
+  const nameProdutct =
+    window.document.querySelector("input.nome-produto").value;
+  const currentURL = new URL(window.location.href);
+  currentURL.searchParams.append("filtrar-produtos-ajax", "");
+  try {
+    const response = await sendRequest("GET", currentURL.href, {
+      "filtrar-produtos-ajax": true,
+      data: date,
+      "nome-produto": nameProdutct,
+    });
   } catch (error) {
     throw new Error(`Erro na solicitação: ${error.message}`);
   }

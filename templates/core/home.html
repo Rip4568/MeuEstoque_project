@@ -37,23 +37,27 @@
       </form>
     </div>
     <div class="listar-todos-os-produtos">
-      <form method="post" name="filtrar-produtos">
+      <form method="get" name="filtrar-produtos">
         {% csrf_token %}
-        <span>data inicio: <input 
+        <span>data de criacao: <input 
             type="date"
-            name="data-inicio"
-            required
+            name="data"
+            id="data"
+            class="data"
             >
         </span>
-        <span>data fim: <input 
-          type="date"
-          name="data-fim"
-          required>
+        <span>Nome do produto: <input 
+          type="text"
+          name="nome-produto"
+          id="nome-produto"
+          class="nome-produto"
+          >
         </span>
         <button 
           type="submit"
           class="btn btn-primary m-2"
-          >Listar</button>
+          >Filtrar</button>
+          <input type="hidden" name="filtrar-produtos">
       </form>
       {% include "core/components/_produtos.html" %}
     </div>

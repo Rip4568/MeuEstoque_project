@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from auditlog.registry import auditlog
 from django.core.validators import MinValueValidator, MinLengthValidator
+from django.utils import timezone
 
 
 class Produto(models.Model):
@@ -33,6 +34,14 @@ class Produto(models.Model):
         null=True
     )
     
+    criado_em = models.DateField(
+        _("Criado em"),
+        default=timezone.now,
+        blank=True,
+        null=True,
+    )
+        
+    
     @property
     def preco_formatado(self):
         return f'{self.preco}'
@@ -40,7 +49,7 @@ class Produto(models.Model):
     class Meta:
         verbose_name = _("Produto")
         verbose_name_plural = _("Produtos")
-        ordering = ['nome']
+        ordering = ['criado_em']
         db_table = 'produtos'
         managed = True
 
