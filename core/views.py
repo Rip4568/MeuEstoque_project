@@ -20,10 +20,12 @@ class HomeView(View):
         'title': "Home Page",
     }
     def get(self, request: HttpRequest) -> HttpResponse|JsonResponse:
-        print(f"GET: {self.request.GET}, \nBODY: {self.request.body}, \nHEADERS {self.request.headers}")
+        #print(f"GET: {self.request.GET}, \nBODY: {self.request.body}, \nHEADERS {self.request.headers}")
+        #body = json.loads(self.request.body)
         if self.request.headers.get('Content-Type') == 'application/json':
+            data:dict = {}
             if 'produtos-ajax' in self.request.GET:
-                data:dict = {
+                data.update({
                     'status': 200,
                     'message': 'success',
                     'html_produtos': loader.render_to_string(
@@ -32,7 +34,7 @@ class HomeView(View):
                             'produtos': models.Produto.objects.all()
                         }
                     )
-                }
+                })
             return JsonResponse(data=data, safe=False)
             #? requisicao ajax
         else:
@@ -48,23 +50,18 @@ class HomeView(View):
         return render(request, template_name=self.TEMPLATE_NAME, context=self.context)
     
     def post(self, request: HttpRequest) -> JsonResponse:
-        print(f"POST: {self.request.POST}, \nBODY: {self.request.body}, \nHEADERS:{self.request.headers}")
-        """ TODO: se a requisição for ajax a mensagem avisando estara dentro
-        do request.body caso contrario estara dentro do request.POST os campos nome e preco.
-        porem no request.body os valores enviados estarão do tipo bytecode
-        caso use o json.loads(request.body) e estiver vazio o retorno será um erro"""
-        
+        #print(f"POST: {self.request.POST}, \nBODY: {self.request.body}, \nHEADERS:{self.request.headers}")
         if self.request.headers.get('Content-Type') == 'application/json':
             #? Requisição ajax
             body = json.loads(self.request.body)
-            if 'criar-novo-produto-ajax' in body:
-                nome_produto = body['nome']
-                preco_produto = body['preco']
-                try:
+            try:
+                if 'criar-novo-produto-ajax' in body:
+                    nome_produto = body['nome']
+                    preco_produto = body['preco']
                     novo_produto = models.Produto(
-                        nome=nome_produto, 
-                        preco=preco_produto
-                    )
+                            nome=nome_produto, 
+                            preco=preco_produto
+                        )
                     novo_produto.full_clean()
                     novo_produto.save()
                     return JsonResponse({
@@ -74,11 +71,26 @@ class HomeView(View):
                             'json', [novo_produto, ]
                         ),
                     })
-                except Exception as error:
-                    return JsonResponse(data={
-                        'status': 400,
-                        'message': str(error),
-                    }, status=400, safe=False)
+                elif 'filtrar-produtos-ajax' in body:
+                    nome_produto = body.get('nome-produto', '')
+                    return JsonResponse({
+                        'status': 200,
+                        'message': 'success',
+                        'html_produtos': loader.render_to_string(
+                            template_name='core/components/_produtos.html',
+                            context={
+                                'produtos': models.Produto.objects.filter(
+                                    nome__icontains=nome_produto,
+                                )
+                            },
+                            request=self.request
+                        )
+                    })
+            except Exception as error:
+                return JsonResponse(data={
+                    'status': 400,
+                    'message': str(error),
+                }, status=400, safe=False)
         elif self.request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
             #?requisição do formulario do django
             if 'criar-novo-produto' in self.request.POST:

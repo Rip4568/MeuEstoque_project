@@ -28,3 +28,13 @@ function getCookie(name) {
 
   return 'NA';
 }
+
+
+function parseErrorDjango(error) {
+  const errors = error.responseJSON;
+  let message = "";
+  for (let key in errors) {
+    message += `${key}: ${errors[key]}\n`;
+  }
+  return message;
+}

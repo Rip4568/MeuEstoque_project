@@ -37,8 +37,10 @@
       </form>
     </div>
     <div class="listar-todos-os-produtos">
-      <form method="get" name="filtrar-produtos">
-        {% csrf_token %}
+      <form method="get" 
+        name="filtrar-produtos"
+        id="form-filter-products"
+        >
         <span>data de criacao: <input 
             type="date"
             name="data"
@@ -55,9 +57,9 @@
         </span>
         <button 
           type="submit"
-          class="btn btn-primary m-2"
+          class="btn btn-primary m-2 btn-filtrar-produtos-ajax"
+          name="filtrar-produtos-ajax"
           >Filtrar</button>
-          <input type="hidden" name="filtrar-produtos">
       </form>
       {% include "core/components/_produtos.html" %}
     </div>

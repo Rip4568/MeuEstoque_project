@@ -36,6 +36,15 @@ function listnerFormNewProduct() {
   });
 }
 
+function listnerFilterProducts(params) {
+  const form = window.document
+  .querySelector("#form-filter-products")
+  .addEventListener('submit', (event) => {
+    event.preventDefault();
+    sendRequestFilterProduct();
+  });
+}
+
 async function sendRequestGetProducts() {
   const currentURL = new URL(window.location.href);
   currentURL.searchParams.append("produtos-ajax", "");
@@ -147,16 +156,19 @@ async function sendRequestDeleteProduct(button) {
 
 async function sendRequestFilterProduct() {
   const date = window.document.querySelector("input.data").value;
-  const nameProdutct =
-    window.document.querySelector("input.nome-produto").value;
-  const currentURL = new URL(window.location.href);
-  currentURL.searchParams.append("filtrar-produtos-ajax", "");
+  const nameProdutct = window.document
+    .querySelector("input.nome-produto")
+    .value;
   try {
-    const response = await sendRequest("GET", currentURL.href, {
+    const response = await sendRequest("POST", window.location.href, {
       "filtrar-produtos-ajax": true,
-      data: date,
+      "data": date,
       "nome-produto": nameProdutct,
     });
+    const data = await response.json();
+    const produtos = window.document.querySelector("#produtos");
+    produtos.innerHTML = data.html_produtos;
+    listnerAllbuttonsDelete();
   } catch (error) {
     throw new Error(`Erro na solicitação: ${error.message}`);
   }
@@ -177,3 +189,4 @@ function getCookie(name) {
 
 listnerAllbuttonsDelete();
 listnerFormNewProduct();
+listnerFilterProducts();
